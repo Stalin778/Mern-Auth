@@ -1,43 +1,37 @@
-import express from 'express';
-import cors from 'cors';
-import { Server } from 'socket.io';
-import dotenv from 'dotenv';
-import auth from './auth.js';
-import http from 'node:http';
+import { createServer } from "http";
+import { Server } from "socket.io";
 
-dotenv.config();
+const httpServer = createServer();
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const server = http.createServer(app);
-
-const io = new Server(server, {
+const io = new Server(httpServer, {
   cors: {
-    origin: '*', 
-  },
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
-io.on('connection', (socket) => {
-  console.log('New user connected:', socket.id);
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
 
+  console.log("Total clients:", io.engine.clientsCount);
+  console.log("Namespace sockets:", io.of("/").sockets.size);
 
-  socket.on('chat message',(msg)=>{
-    console.log("messag recieved "+msg);
-    socket.emit('hello','world');
-  })
-  
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
+
+  socket.on("connect_error", (err) => {
+    console.log("Socket error:", err.message);
+  });
+  socket.on('chat message',(msg)=>{
+    io.local.emit('chat message',msg);
+  })
 });
 
-const PORT =  9096;
-app.get('/', (req, res) => {
-  res.send('Server is running 🚀');
-});
-server.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+io.engine.on("connection_error", (err) => {
+  console.log("Engine error:", err.message);
 });
 
+httpServer.listen(3000, () => {
+  console.log("Server started on port 3000");
+});
