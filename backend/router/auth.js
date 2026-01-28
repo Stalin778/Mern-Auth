@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import User from '../modules/db.js';
+import User from '../models/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 dotenv.config();

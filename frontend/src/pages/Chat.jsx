@@ -1,100 +1,69 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client';
-
-const socket = io('http://localhost:3000');
-
+import  axios from 'axios';
 const Chat = () => {
-  const [msg, setMsg] = useState('');
-  const [msgs, setMsgs] = useState([]);
-  const [socketid, setSocketid] = useState('');
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      setSocketid(socket.id);
-      console.log("Connected:", socket.id);
-    });
-
-    socket.on("chat message", (msg) => {
-      setMsgs(prev => {
-        if (msg.userid !== socket.id) {
-          return [...prev, msg];
-        }
-        return prev;
-      });
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("chat message");
-    };
-  }, []);
- const handleMsg=(e)=>{
-    setMsg(e.target.value);
-    
-
-  };
-
+  const [userdata, setUserData] = useState({ username: '', email: '' });
+  
+  const socketRef = useRef(null);
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!msg.trim()) return;
+  }
+  const token = localStorage.getItem('token');
 
-    const msgobj = {
-      msg,
-      userid: socket.id
-    };
-
-    setMsgs(prev => [...prev, msgobj]);
-    socket.emit('chat message', msgobj);
-    setMsg('');
-
-
-  };
+const chatHandler=(data)=>{
+  console.log(data);
+}
+  useEffect(() => {
+    socketRef.current = io("http://localhost:3000");
+    socketRef.current.on("connect",()=>{
+      console.log(socketRef.current.id);
+    })
+     socketRef.current.on("chat message",chatHandler);
  
-  return (
-   <div className="flex items-center justify-center h-screen w-screen bg-amber-300">
-      <div className="container relative bg-amber-100 w-96 h-96 flex flex-col p-4">
+    axios.get("http://localhost:8085/protected/profile", {
+      headers: {
+        "x-auth-token": token
+      }
+    })
+      .then(res => {
+        setUserData(prev =>({ ...prev, username: res.data.username, email: res.data.email }))
+      })
+      .catch(err => { });
 
-      
-        <div className="flex flex-col gap-2 overflow-y-auto pb-14">
-          {msgs.map((msg, index) => (
-            <div
-              key={index}
-              className={`chatsection  bg-white px-3 py-2 rounded-lg max-w-[75%] ${msg.userid==socketid?'self-end':'self-start'}`}
-            >
-             <div className='text-gray-400 '> {msg.userid}</div>
-              {msg.msg}
-            </div>
-          ))}
+        return ()=>{
+          socketRef.current.off("chat message",chatHandler);
+          socketRef.current.disconnect();
+        }
+  }, []);
+
+
+
+
+  return (
+    <div className='bg-amber-300 h-screen w-auto flex items-center justify-center'>
+      <div className="container bg-amber-100 h-[80%] w-[80%]  flex flex-col">
+        <div className="roominof my-0 h-10 bg-amber-200 flex items-center px-5 ">Hello</div>
+        <div className="messages text-2xl  overflow-y-auto gap-2 flex-1 flex flex-col  p-2 px-3  ">
+
+
+
+          <div className="message bg-green-200 max-w-[70%] w-fit self-end  rounded-2xl px-5  ">
+            <div className='text-sm '>name</div>
+            here we will display the message
+          </div>
         </div>
 
-        
-        <form
-          className="flex absolute bottom-0 left-0 w-full p-2 gap-2 bg-amber-100"
-          onSubmit={handleSubmit}
-        >
-          <input
-            type="text"
-            name="msg"
-           onChange={handleMsg}
-            className="bg-white h-10 flex-1 px-2 rounded"
-          />
-          <button
-            className="h-10 px-5 bg-blue-100 rounded-xl"
-            type="submit"
-          >
-            Send
-          </button>
-        </form>
 
+        <div className="sendbox mt-auto">
+          <form className='grid grid-cols-[4fr_1fr] ' onSubmit={handleSubmit}>
+            <input type="text" className="msginput bg-white   " />
+            <button className=' bg-blue-400'>Send</button>
+          </form>
+        </div>
       </div>
+
     </div>
+  )
+}
 
-  );
-};
-
-export default Chat;
-
-
-
-
-
+export default Chat

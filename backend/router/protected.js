@@ -1,6 +1,6 @@
 import express from "express";
 import auth from '../middleware/auth.js';
-import User from "../modules/db.js";
+import User from "../models/db.js";
 const prouter=express.Router();
 
 prouter.post('/a',auth,(req,res)=>{
