@@ -6,7 +6,6 @@ import Chat from '../models/chatmodel.js';
 import Room from '../models/roomModel.js';
 import { addMemberToRoom, createroom, findroom } from '../roomManager/roomcontroller.js';
 
-
 mongoose
   .connect(process.env.MONGO_CHAT_URI)
   .then(() => console.log("chat database is active"))
