@@ -14,8 +14,8 @@ useEffect(()=>{
     }
   })
 .then(res=>{
-setUserData({...userData,username:res.data.userData.username,email:res.data.email,profileImg:res.data.profileImg,userStatus:res.data.userData.userstatus})
-console.log(userData);
+setUserData({...userData,username:res.data.userData.username,email:res.data.userData.email,profileImg:res.data.userData.profileImg,userStatus:res.data.userData.userstatus})
+console.log(res);
 })
   .catch(err=>{
     console.log(err);
@@ -25,15 +25,28 @@ console.log(userData);
   
   
   const [search,setSearch]=useState("");
-  
+  const [profileImg,setProfileImg]=useState(false);
   useEffect(()=>{
+    if(userData.profileImg){
+      setProfileImg(true);
+    }
 
   })
   return (
     <div className="left bg-amber-300 rounded-l-2xl p-1 flex flex-col">
         <p className="title">Chat</p>
         <hr />
-        <div className='w-25 h-25 rounded-full mx-auto my-0 flex flex-col items-center justify-center mt-10 bg-amber-100  '>{}</div>
+        <div className='w-25 h-25 rounded-full mx-auto my-0 flex flex-col items-center justify-center mt-10 bg-amber-100  '>{
+            profileImg?(
+              <img src={userData.profileImg} alt='profileImage' className='w-full h-full object-cover'/>
+            ):
+            ( <div className="text-2xl font-bold">
+      {userData.username.charAt(0).toUpperCase()}
+    </div>)
+        
+        
+        
+}</div>
         <div className="profile_name text-center mt-5">{userData.username}</div>
         <div className="flex">
  <p className='mx-auto bg-green-400 text-green-200 rounded-3xl px-2'>Availabel</p>

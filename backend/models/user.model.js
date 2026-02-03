@@ -19,7 +19,9 @@ const UserSchema=new mongoose.Schema({
     },
     profileImg:{
         type:String,
-        required:false
+        required:false,
+        
+    
     },
     userstatus:{
         type:String,
@@ -62,6 +64,25 @@ const UserRelations=new mongoose.Schema({
 UserRelations.index({ requester: 1, receiver: 1 }, { unique: true });
 const UserRelation=mongoose.model('UserRelation',UserRelations);
 export {UserRelation};
-
+const MessageSchema=mongoose.Schema({
+    senderId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        required:true
+    },
+    conversationId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'UserRelation',
+        required:true,
+        
+    },
+    message:{
+        type:String,
+        required:true
+        
+    }
+},{timestamps:true})
+const Message=mongoose.model("Message",MessageSchema);
+export {Message};
 
    

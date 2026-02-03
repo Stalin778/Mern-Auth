@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "./user.model";
 
 const chatSchema=new mongoose.Schema({
     roomId:{
@@ -25,6 +26,8 @@ const chatSchema=new mongoose.Schema({
 const Chat=mongoose.model('Chat',chatSchema);
 export default Chat;
 
-const UserHistory=new mongoose.Schema({
+const Friends=mongoose.Schema({
+    userId:_id,
+    ref:User,
     
 })

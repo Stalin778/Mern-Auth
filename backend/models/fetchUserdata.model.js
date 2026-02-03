@@ -1,5 +1,5 @@
 import { User } from "./user.model.js";
-
+import { UserRelation } from "./user.model.js";
 
 const registerUser=async(userData)=>{
     const{username,email,password}=userData;
@@ -42,4 +42,16 @@ const findUserName=async(user_id)=>{
     
 
 }
-export {findEmail,registerUser,findUserName};
+const findUserRelations=async(user_id)=>{
+    const user=await UserRelation.findOne({_id:user_id});
+    if(!user) throw new Error("user not found");
+    return user;
+}
+const findUsers=async(username)=>{
+    console.log(username);
+    const user=await User.findOne({username:username},{username:1,profileImg:1});
+    if(!user) throw new Error("user not found");
+    return user;
+
+}
+export {findEmail,registerUser,findUserName,findUserRelations,findUsers};

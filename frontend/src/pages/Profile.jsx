@@ -30,6 +30,7 @@ const Profile = () => {
       localStorage.removeItem('token');
       navigate('/');
     }
+    
   return (
     <div className='flex h-screen flex-col justify-center items-center'>
       <div className="cont1 bg-amber-400 h-100 w-70  pt-15 rounded-2xl">
