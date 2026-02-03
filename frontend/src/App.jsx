@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import routes from './routes/Routes';
 import AppRoutes from './routes/Routes';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Routes } from 'react-router-dom';
 import UserChat from './pages/UserChat';
 
 const App = () => {
@@ -12,8 +12,7 @@ const App = () => {
 
   return (
     <div>
-    <UserChat/>
-     
+    <AppRoutes/>
       </div>
   ) 
 }

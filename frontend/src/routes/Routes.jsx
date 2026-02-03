@@ -6,7 +6,8 @@ import Register from '../pages/Register'
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'
 
 import Profile from '../pages/Profile'
-import Chat from '../pages/Chat'
+
+import UserChat from '../pages/UserChat'
 
 const AppRoutes = () => {
   return (
@@ -21,10 +22,10 @@ const AppRoutes = () => {
         </ProtectedRoute>
         
      }/>
-     <Route path='/chat' element={
+     <Route path='/Chat' element={
       
         <ProtectedRoute>
-        <Chat/>
+        <UserChat/>
         </ProtectedRoute>
      }/>
      

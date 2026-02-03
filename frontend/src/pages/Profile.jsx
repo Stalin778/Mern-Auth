@@ -15,7 +15,8 @@ const Profile = () => {
     }
     })
     .then(res=>{
-      setUserData({...userdata,username:res.data.username,email:res.data.email})
+      console.log(res);
+      setUserData({...userdata,username:res.data.userData.username,email:res.data.email})
     })
     .catch(err=>{
       console.log(err);

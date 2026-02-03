@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
-import Chat from '../models/chatmodel.js';
+import Chat from '../models/chat.model.js';
 import Room from '../models/roomModel.js';
 import { addMemberToRoom, createroom, findroom } from '../roomManager/roomcontroller.js';
 

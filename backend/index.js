@@ -2,9 +2,10 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors';
 dotenv.config();
-import router from './router/auth.js';
+
 import mongoose from 'mongoose';
-import prouter from './router/protected.js';
+import authRouter from './router/auth.router.js';
+import userInfo from './router/userInfo.router.js';
 
 mongoose
     .connect(process.env.MONGO_URI)
@@ -17,14 +18,9 @@ const app=express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/',(req,res)=>{
-    console.log("somethins");
-    res.send("hellow world");
 
-})
-app.use('/auth',router);
-app.use('/protected',prouter);
-
+app.use('/auth',authRouter);
+app.use('/protected',userInfo);
 app.get('/',(req,res)=>{
     res.send("hellow world");
 
