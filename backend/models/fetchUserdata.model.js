@@ -49,7 +49,7 @@ const findUserRelations=async(user_id)=>{
 }
 const findUsers=async(username)=>{
     console.log(username);
-    const user=await User.findOne({username:username},{username:1,profileImg:1});
+    const user=await User.find({username:{$regex:username,$options:"i"}},{username:1,profileImg:1});
     if(!user) throw new Error("user not found");
     return user;
 

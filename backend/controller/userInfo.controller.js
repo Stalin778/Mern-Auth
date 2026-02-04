@@ -30,7 +30,7 @@ const userRelationcontroller=async(req,res)=>{
     }
 }
 const usersController=async(req,res)=>{
-    const username=req.body.username;
+    const username=req.query.username;
     console.log(username);
     try{
         const users=await fetchUsers(username);
