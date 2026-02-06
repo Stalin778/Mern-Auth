@@ -1,5 +1,6 @@
-import { findUserName, findUsers } from "../models/fetchUserdata.model.js";
-import { findUserRelations } from "../models/fetchUserdata.model.js";
+import { findUserName, findUserRelations, findUsers, reqModel } from "../models/fetchUserdata.model.js";
+
+
 const fetchUserdata =async(user_id)=>{
   try{
     const data=await findUserName(user_id);
@@ -16,9 +17,13 @@ const fetchUserdata =async(user_id)=>{
 }
 
 const fetchUserRealtions=async(user_id)=>{
-  
-    const relationdata=findUserRelations(user_id);
+  try{
+    
+    const relationdata=await findUserRelations(user_id);
     return relationdata;
+  }catch(err){
+    throw err;
+  }
   
 }
 const fetchUsers=async(username)=>{
@@ -34,5 +39,17 @@ const fetchUsers=async(username)=>{
   
    
   }
+const sendReqService=async(req_data)=>{
 
-export {fetchUserdata,fetchUserRealtions,fetchUsers};
+  try{
+
+ 
+  const sendReq=await reqModel(req_data);
+  return sendReq;
+
+  }catch(err){
+    console.log(err);
+    throw err;
+  }
+}
+export {fetchUserdata,fetchUserRealtions,fetchUsers,sendReqService};

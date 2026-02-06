@@ -1,10 +1,12 @@
 import React, { use, useState } from 'react'
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect,useContext} from 'react';
 import profileAlt from '../../assets/profileAlt.png'
+import { UserContext } from '../../context/UserContext';
 const Profile1info = () => {
-  
+  const {setSelectedUser}=useContext(UserContext);
+
   const token=localStorage.getItem('token');
   const [userData,setUserData]=useState({username:'',email:'',profileImg:'',userStatus:''})
 useEffect(()=>{
@@ -31,7 +33,7 @@ console.log(res);
       setProfileImg(true);
     }
 
-  })
+  },[])
   const [search,setSearch]=useState('');
   const [searchResult,setSearchResult]=useState([]);
   useEffect(()=>{
@@ -46,8 +48,11 @@ console.log(res);
    },300); 
      return () => clearTimeout(timer);
   },[search])
- console.log(searchResult);
+ const handleProfileClick=(obj)=>{
+ setSelectedUser(obj);
+ }
   return (
+   
     <div className="left bg-amber-300 rounded-l-2xl p-1 flex flex-col">
         <p className="title">Chat</p>
         <hr />
@@ -86,8 +91,8 @@ console.log(res);
 ):(<div className="searchResult flex flex-col gap-2 ">
           
   {searchResult.length<=0?(<p className='text-black font-bold'>No results</p>):(
-    searchResult.map((obj,index)=>{return( <div key={obj._id} className='flex felx-col'>
-            <div className="Main_profile flex  items-center gap-2 w-full ">
+    searchResult.map((obj,index)=>{return( <div key={obj._id} className='flex flex-col'>
+            <div onClick={()=>handleProfileClick(obj._id)} className="Main_profile flex  items-center gap-2 w-full ">
               <div className="profile_image h-10 w-10  rounded-full bg-blue-100 ">
                 <img src={profileAlt} alt="f" className=' object-cover w-full h-full rounded-full' />
               </div>

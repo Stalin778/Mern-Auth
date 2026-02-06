@@ -1,5 +1,5 @@
-import { User } from "./user.model.js";
-import { UserRelation } from "./user.model.js";
+import { User, UserRelation } from "./user.model.js";
+import mongoose  from "mongoose";
 
 const registerUser=async(userData)=>{
     const{username,email,password}=userData;
@@ -29,6 +29,7 @@ const findUserName=async(user_id)=>{
         const user=await User.findOne({_id:user_id})  
         if(!user) throw new Error("user not found");
         const data={
+            id:user_id,
             username:user.username,
             profileImg:user.profileImg,
             userstatus:user.userstatus
@@ -43,8 +44,11 @@ const findUserName=async(user_id)=>{
 
 }
 const findUserRelations=async(user_id)=>{
-    const user=await UserRelation.findOne({_id:user_id});
-    if(!user) throw new Error("user not found");
+    
+    
+    const user=await UserRelation.find({UserIds:new mongoose.Types.ObjectId(user_id)});
+    console.log(user);
+    if(user.length===0) throw new Error("No relations");
     return user;
 }
 const findUsers=async(username)=>{
@@ -54,4 +58,32 @@ const findUsers=async(username)=>{
     return user;
 
 }
-export {findEmail,registerUser,findUserName,findUserRelations,findUsers};
+const reqModel = async (req_data) => {
+  try {
+    console.log(req_data);
+    if (req_data.requester === req_data.requestee) {
+      throw new Error("Cannot send request to yourself");
+    }
+
+    const userIds = [
+      new mongoose.Types.ObjectId(req_data.requester),
+      new mongoose.Types.ObjectId(req_data.requestee),
+    ].sort();
+
+    const fReq = new UserRelation({
+      UserIds: userIds,
+      lastMsg: "",
+      reqStatus: "pending",
+    });
+
+    await fReq.save();
+    return fReq;
+
+  } catch (err) {
+    if (err.code === 11000) {
+      throw new Error("Relation already exists");
+    }
+    throw err;
+  }
+};
+export {findEmail,registerUser,findUserName,findUserRelations,findUsers,reqModel};

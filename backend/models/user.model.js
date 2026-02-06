@@ -33,37 +33,39 @@ const UserSchema=new mongoose.Schema({
 const User =mongoose.model('User',UserSchema);
 export  {User};
 
-const UserRelations=new mongoose.Schema({
-    requester:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required:true,
+
+const UserRelationSchema = new mongoose.Schema(
+  {
+    UserIds: {
+      type: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }],
+      validate: {
+        validator: v => Array.isArray(v) && v.length === 2,
+        message: 'UserIds must contain exactly two users'
+      },
+      required: true
     },
-    receiver:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required:true,
+
+    lastMsg: {
+      type: String,
+      default: ''
     },
-    status:{
-        type:String,
-        enum:['pending','accepted','blocked'],
-        default:'pending'
-    },
-    actionBy:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        
-    },
-    lastmsg:{
-        type:String,
-        default:'',
+
+    reqStatus: {
+      type: String,
+      enum: ['accepted', 'pending', 'blocked'],
+      default: 'pending'
     }
+  },
+  { timestamps: true }
+);
 
+const UserRelation=mongoose.model("UserRelation",UserRelationSchema);
+export {UserRelation}
 
-},{timestamps:true});
-UserRelations.index({ requester: 1, receiver: 1 }, { unique: true });
-const UserRelation=mongoose.model('UserRelation',UserRelations);
-export {UserRelation};
 const MessageSchema=mongoose.Schema({
     senderId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -73,8 +75,7 @@ const MessageSchema=mongoose.Schema({
     conversationId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'UserRelation',
-        required:true,
-        
+        required:true
     },
     message:{
         type:String,
